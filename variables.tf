@@ -24,13 +24,13 @@ variable "appname" {
 
 variable "subnet_numbers" {
   description = "Map from availability zone to the number that should be used for each availability zone's subnet"
-  default     = toset([ "eu-west-1a", "eu-west-1b", "eu-west-1c"])
+  default     = [ "eu-west-1a", "eu-west-1b", "eu-west-1c"]
   type = set(string)
 }
 
 variable "ports" {
   description = "UDP Ports to expose"
-  default = toset([2456, 2457, 2458])
+  default = [2456, 2457, 2458]
   type = set(number)
 }
 
