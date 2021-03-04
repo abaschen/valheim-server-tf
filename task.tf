@@ -1,7 +1,7 @@
 resource "aws_ecs_task_definition" "valheim-task" {
   family                   = "valheim-server" # Naming our first task
   container_definitions    = templatefile("${path.module}/docker.tpl", {
-    ports = var.ports[*].0
+    ports = [for port in var.ports: port[0]]
     envs = var.container.environment
     image = var.container.image
     memory = var.container.memory
