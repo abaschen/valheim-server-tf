@@ -1,7 +1,7 @@
-resource "aws_ecs_service" "valheim-service" {
-  name            = "valheim-service"
+resource "aws_ecs_service" "ecs-service" {
+  name            = "${var.appname}-service"
   cluster         = aws_ecs_cluster.cluster.id
-  task_definition = aws_ecs_task_definition.valheim-task.arn
+  task_definition = aws_ecs_task_definition.app-task.arn
   launch_type     = "FARGATE"
   desired_count   = 1 # only one docker supported
 
@@ -14,7 +14,7 @@ resource "aws_ecs_service" "valheim-service" {
     for_each= var.ports
     content{ 
         target_group_arn = aws_lb_target_group.target_group.arn # Referencing our target group
-        container_name   = aws_ecs_task_definition.valheim-task.family
+        container_name   = aws_ecs_task_definition.app-task.family
         container_port   = load_balancer.value[0]
     }
   }

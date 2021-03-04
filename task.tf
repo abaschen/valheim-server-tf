@@ -1,5 +1,5 @@
-resource "aws_ecs_task_definition" "valheim-task" {
-  family                   = "valheim-server" # Naming our first task
+resource "aws_ecs_task_definition" "app-task" {
+  family                   = "${var.appname}-server" # Naming our first task
   container_definitions    = templatefile("${path.module}/docker.tpl", {
     ports = [for port in var.ports: port[0]]
     envs = var.container.environment
