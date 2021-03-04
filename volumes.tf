@@ -21,9 +21,7 @@ resource "aws_efs_mount_target" "mount" {
   subnet_id      = each.value
 
   security_groups = [aws_security_group.efs.id]
-  tags = {
-    Application = var.appname
-  }
+
 }
 
 resource "aws_security_group" "efs" {
