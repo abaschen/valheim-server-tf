@@ -1,6 +1,6 @@
 
 resource "aws_alb" "application_load_balancer" {
-  name               = "valheim-loadbalancer"
+  name               = "${var.appname}-loadbalancer"
   load_balancer_type = "application"
   subnets = aws_subnet.default_subnet[*].id
   # Referencing the security group
@@ -19,7 +19,8 @@ resource "aws_security_group" "load_balancer_security_group" {
         to_port     = port[0]
         protocol    = port[1]
         cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from all sources
-        
+        description = "port[0]/port[1]"
+
         ipv6_cidr_blocks= null
         prefix_list_ids= null
         security_groups= null
@@ -41,9 +42,9 @@ resource "aws_security_group" "load_balancer_security_group" {
 
 resource "aws_lb_target_group" "target_group" {
     for_each = var.ports
-    name        = "valheim-target-group-${each.key}"
-    port        = each.value
-    protocol    = "UDP"
+    name        = "${var.appname}-target-group-${each.value[0]}-${each.value[1]}"
+    port        = each.value[0]
+    protocol    = each.value[1]
     target_type = "ip"
     vpc_id      = aws_vpc.default_vpc.id # Referencing the default VPC
     # TODO add healthcheck when they have one
@@ -58,12 +59,15 @@ resource "aws_lb_target_group" "target_group" {
 }
 
 resource "aws_lb_listener" "listener" {
-  for_each = var.ports
+  count = length(aws_lb_target_group.target_group)
   load_balancer_arn = aws_alb.application_load_balancer.arn # Referencing our load balancer
-  port              = each.value
-  protocol          = "UDP"
+    port        = aws_lb_target_group.target_group[count.index].port
+    protocol    = aws_lb_target_group.target_group[count.index].protocol
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.target_group[each.key].arn # Referencing our tagrte group
+    target_group_arn = aws_lb_target_group.target_group[count.index].arn # Referencing our tagrte group
+  }
+  tags = {
+    Application  = var.appname
   }
 }
