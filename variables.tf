@@ -31,7 +31,7 @@ variable "subnet_zones" {
 variable "ports" {
   description = "UDP Ports to expose"
   default = [[2456, "udp"], [2457, "udp"], [2458,"udp"]]
-  type = set(set(number, string))
+  type = set(tuple(number, string))
 }
 
 variable "container" {
