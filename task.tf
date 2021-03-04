@@ -6,6 +6,7 @@ resource "aws_ecs_task_definition" "valheim-task" {
     image = var.container.image
     memory = var.container.memory
     cpu = var.container.cpu
+    app = var.appname
   })
   requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
