@@ -32,11 +32,11 @@ resource "aws_vpc" "default_vpc" {
 }
 
 resource "aws_subnet" "default_subnet" {
-  for_each = var.subnet_numbers
+  for_each = var.subnet_zones
 
   vpc_id            = aws_vpc.default_vpc.id
   availability_zone = each.value
-  cidr_block        = cidrsubnet(aws_vpc.default_vpc.cidr_block, 8, index(var.subnet_numbers, each.value) + 1)
+  cidr_block        = cidrsubnet(aws_vpc.default_vpc.cidr_block, 8, index(var.subnet_zones, each.value) + 1)
   tags = {
     Application  = var.appname
   }

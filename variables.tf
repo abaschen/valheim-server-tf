@@ -22,7 +22,7 @@ variable "appname" {
   default = "valheim"
 }
 
-variable "subnet_numbers" {
+variable "subnet_zones" {
   description = "Map from availability zone to the number that should be used for each availability zone's subnet"
   default     = [ "eu-west-1a", "eu-west-1b", "eu-west-1c"]
   type = set(string)

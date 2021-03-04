@@ -36,7 +36,7 @@ resource "aws_security_group" "efs" {
     to_port   = 2049
     protocol  = "tcp"
 
-    cidr_blocks = aws_subnet.default_subnet.cidr_blocks
+    cidr_blocks = [aws_vpc.default_vpc.cidr_block]
   }
 
   egress {
@@ -44,7 +44,7 @@ resource "aws_security_group" "efs" {
     to_port   = 2049
     protocol  = "tcp"
 
-    cidr_blocks = aws_subnet.default_subnet.cidr_blocks
+    cidr_blocks = [aws_vpc.default_vpc.cidr_block]
   }
 
   tags = {
