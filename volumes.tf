@@ -1,5 +1,5 @@
 resource "aws_efs_file_system" "app-fs" {
-  tags {
+  tags = {
     Application = var.appname
   }
 }
@@ -21,7 +21,7 @@ resource "aws_efs_mount_target" "mount" {
   subnet_id      = each.value
 
   security_groups = [aws_security_group.load.id]
-  tags {
+  tags = {
     Application = var.appname
   }
 }
@@ -47,7 +47,7 @@ resource "aws_security_group" "efs" {
     cidr_blocks = aws_subnet.default_subnet.cidr_blocks
   }
 
-  tags {
+  tags = {
     Application = var.appname
   }
 }

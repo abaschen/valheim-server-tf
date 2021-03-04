@@ -25,7 +25,7 @@ resource "aws_ecs_service" "valheim-service" {
 }
 
 resource "aws_vpc" "default_vpc" {
-  # ... a default vpc
+  cidr_block = "10.0.0.0/16"
   tags = {
     Application  = var.appname
   }
