@@ -1,8 +1,21 @@
+locals {
+  ports = [for p in var.ports: {
+            "containerPort": p[0],
+            "hostPort": p[0],
+            "protocol": p[1]
+            }]
+
+  envs = [for name,env in var.container.environment: {
+                "name": name,
+                "value": env
+            }]
+}
+
 resource "aws_ecs_task_definition" "app-task" {
   family                   = "${var.appname}-server" # Naming our first task
   container_definitions    = templatefile("${path.module}/docker.tpl", {
-    ports = [for port in var.ports: port[0]]
-    envs = var.container.environment
+    ports = jsonencode(local.ports)
+    envs = jsonencode(local.envs)
     image = var.container.image
     memory = var.container.memory
     cpu = var.container.cpu

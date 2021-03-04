@@ -4,21 +4,11 @@ resource "aws_efs_file_system" "app-fs" {
   }
 }
 
-locals {
-    subnet_volumes = [for pair in setproduct(var.container.volumes, aws_subnet.default_subnet) : {
-      volume_key = pair[0].key
-      subnet_key  = pair[1].key
-    }]
-
-    #for_each = {for subnet_volume in local.subnet_volumes : "${subnet_volume.volume_key}.${subnet_volume.subnet_key}" => subnet_volume}
-}
-
 resource "aws_efs_mount_target" "mount" {
-
-  for_each = [for subnet in aws_subnet.default_subnet: subnet.id]
+  count = length(var.subnet_zones)
 
   file_system_id = aws_efs_file_system.app-fs.id
-  subnet_id      = each.value
+  subnet_id      = aws_subnet.default_subnet[count.index].id
 
   security_groups = [aws_security_group.efs.id]
 

@@ -13,9 +13,10 @@ resource "aws_ecs_service" "ecs-service" {
   dynamic "load_balancer" {
     for_each= var.ports
     content{ 
-        target_group_arn = aws_lb_target_group.target_group.arn # Referencing our target group
+        target_group_arn = aws_lb_target_group.target_group[load_balancer.key].arn # Referencing our target group
         container_name   = aws_ecs_task_definition.app-task.family
         container_port   = load_balancer.value[0]
+        
     }
   }
 

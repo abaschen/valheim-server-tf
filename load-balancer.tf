@@ -41,10 +41,10 @@ resource "aws_security_group" "load_balancer_security_group" {
 }
 
 resource "aws_lb_target_group" "target_group" {
-    for_each = toset(var.ports)
-    name        = "${var.appname}-target-group-${each.value[0]}-${each.value[1]}"
-    port        = each.value[0]
-    protocol    = each.value[1]
+    count = length(var.ports)
+    name        = "${var.appname}-target-group-${var.ports[count.index][0]}-${var.ports[count.index][1]}"
+    port        = var.ports[count.index][0]
+    protocol    = var.ports[count.index][1]
     target_type = "ip"
     vpc_id      = aws_vpc.default_vpc.id # Referencing the default VPC
     # TODO add healthcheck when they have one
