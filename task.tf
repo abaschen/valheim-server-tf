@@ -23,10 +23,10 @@ resource "aws_ecs_task_definition" "valheim-task" {
       "name": "valheim-server",
       "image": "${var.container.image}",
       "essential": true,
-      "portMappings": ${locals.portMappings},
+      "portMappings": ${local.portMappings},
       "memory": ${var.container.memory},
       "cpu": ${var.container.cpu},
-      "environment": ${locals.environment},
+      "environment": ${local.environment},
     }
   ]
   DEFINITION
