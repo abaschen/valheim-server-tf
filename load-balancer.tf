@@ -15,10 +15,15 @@ resource "aws_security_group" "load_balancer_security_group" {
 
   ingress = [
     for port in var.ports: {
-        from_port   = port # Allowing traffic in from port 2456
-        to_port     = port
-        protocol    = "udp"
+        from_port   = port[0] # Allowing traffic in from port 2456
+        to_port     = port[0]
+        protocol    = port[1]
         cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from all sources
+        
+        ipv6_cidr_blocks= null
+        prefix_list_ids= null
+        security_groups= null
+        self= null
     }
   ]
 

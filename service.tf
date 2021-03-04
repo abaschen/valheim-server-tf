@@ -15,7 +15,7 @@ resource "aws_ecs_service" "valheim-service" {
     content{ 
         target_group_arn = aws_lb_target_group.target_group.arn # Referencing our target group
         container_name   = aws_ecs_task_definition.valheim-task.family
-        container_port   = load_balancer.value
+        container_port   = load_balancer.value[0]
     }
   }
 

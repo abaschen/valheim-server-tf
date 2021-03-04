@@ -1,35 +1,16 @@
-
 locals {
-  portMappings = jsonencode( { for port in sort(var.ports) : port => 
-        {
-          "containerPort": port,
-          "hostPort": port
-        }
-      })
-
-  environment = jsonencode( { for key in keys(var.container.environment) : key => 
-      {
-        "name": key,
-        "value": var.container.environment[key]
-      }
-  })
+  template = jsonencode(templatefile("${path.module}/docker.tpl", {
+    ports = var.ports[*].0
+    envs = var.container.environment
+    image = var.container.image
+    memory = var.container.memory
+    cpu = var.container.cpu
+  }))
 }
 
 resource "aws_ecs_task_definition" "valheim-task" {
   family                   = "valheim-server" # Naming our first task
-  container_definitions    = <<DEFINITION
-  [
-    {
-      "name": "valheim-server",
-      "image": "${var.container.image}",
-      "essential": true,
-      "portMappings": ${local.portMappings},
-      "memory": ${var.container.memory},
-      "cpu": ${var.container.cpu},
-      "environment": ${local.environment},
-    }
-  ]
-  DEFINITION
+  container_definitions    = template
   requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
   memory                   = var.container.memory         # Specifying the memory our container requires
