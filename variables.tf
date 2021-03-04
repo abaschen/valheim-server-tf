@@ -3,13 +3,6 @@ variable "region" {
   type = string
 }
 
-variable "aws" {
-    default = {
-        id = ""
-        key=""
-    }
-}
-
 variable "domain" {
     description = "your domain"
   default = "techunter.io"
@@ -25,7 +18,7 @@ variable "appname" {
 variable "subnet_zones" {
   description = "Map from availability zone to the number that should be used for each availability zone's subnet"
   default     = [ "eu-west-1a", "eu-west-1b", "eu-west-1c"]
-  type = set(string)
+  type = list(string)
 }
 
 variable "ports" {
