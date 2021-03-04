@@ -36,15 +36,15 @@ resource "aws_ecs_task_definition" "valheim-task" {
   cpu                      = var.container.cpu            # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
 
-  dynamic "volume"{
+  dynamic "volume" {
       for_each = var.container.volumes
 
       content {
-        name = each.key
+        name = volume.key
 
         efs_volume_configuration {
           file_system_id          = aws_efs_file_system.app-fs.id
-          root_directory          = each.value.host_path
+          root_directory          = volume.value.host_path
         }
     }
   }
