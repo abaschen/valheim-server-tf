@@ -67,7 +67,4 @@ resource "aws_lb_listener" "listener" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.target_group[count.index].arn # Referencing our tagrte group
   }
-  tags = {
-    Application  = var.appname
-  }
 }
