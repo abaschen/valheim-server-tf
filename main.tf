@@ -9,8 +9,6 @@ terraform {
 
 provider "aws" {
   region = var.region
-  access_key = "AKIAQ7RSVPHP6L2ZA64M"
-  secret_key = "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"
 }
 
 data "aws_route53_zone" "selected" {
