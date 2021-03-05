@@ -1,6 +1,6 @@
 [
     {
-      "name": "${app}",
+      "name": "${app}-server",
       "image": "${image}",
       "essential": true,
       "portMappings": ${ports},
