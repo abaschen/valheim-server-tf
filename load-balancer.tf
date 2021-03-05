@@ -61,6 +61,8 @@ resource "aws_lb_target_group" "target_group" {
 resource "aws_lb_listener" "listener" {
   count = length(aws_lb_target_group.target_group)
   load_balancer_arn = aws_alb.application_load_balancer.arn # Referencing our load balancer
+    port        = aws_lb_target_group.target_group[count.index].port
+    protocol    = aws_lb_target_group.target_group[count.index].protocol
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.target_group[count.index].arn # Referencing our tagrte group
