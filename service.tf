@@ -1,3 +1,27 @@
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.default_vpc.id
+
+  tags = {
+    Application = var.appname
+  }
+}
+
+# create routes
+resource "aws_route_table" "aws-route-table" {
+  vpc_id = aws_vpc.default_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.gw.id
+  }
+  tags = {
+    Application = var.appname
+  }
+}
+resource "aws_main_route_table_association" "aws-route-table-association" {
+  vpc_id = aws_vpc.default_vpc.id
+  route_table_id = aws_route_table.aws-route-table.id
+}
+
 resource "aws_ecs_service" "ecs-service" {
   name            = "${var.appname}-service"
   cluster         = aws_ecs_cluster.cluster.id
@@ -16,13 +40,15 @@ resource "aws_ecs_service" "ecs-service" {
         target_group_arn = aws_lb_target_group.target_group[load_balancer.key].arn # Referencing our target group
         container_name   = aws_ecs_task_definition.app-task.family
         container_port   = load_balancer.value[0]
-        
+
     }
   }
 
    tags = {
     Application  = var.appname
   }
+
+  depends_on = [ aws_internet_gateway.gw ]
 }
 
 resource "aws_vpc" "default_vpc" {

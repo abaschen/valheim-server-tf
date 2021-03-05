@@ -25,7 +25,7 @@ resource "aws_ecs_task_definition" "app-task" {
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
   memory                   = var.container.memory         # Specifying the memory our container requires
   cpu                      = var.container.cpu            # Specifying the CPU our container requires
-  execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
+  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
 
   dynamic "volume" {
       for_each = var.container.volumes
