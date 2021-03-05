@@ -1,26 +1,22 @@
-locals {
-  ports = [for p in var.ports: {
+
+resource "aws_ecs_task_definition" "app-task" {
+  family                   = "${var.appname}-container"
+  container_definitions    = jsonencode([{
+      name= var.appname
+      image= var.container.image
+      essential= true
+      portMappings= [for p in var.ports: {
             "containerPort": p[0],
             "hostPort": p[0],
             "protocol": p[1]
             }]
-
-  envs = [for name,env in var.container.environment: {
+      memory= var.container.memory
+      cpu= var.container.cpu
+      environment= [for name, env in var.container.environment: {
                 "name": name,
                 "value": env
             }]
-}
-
-resource "aws_ecs_task_definition" "app-task" {
-  family                   = "${var.appname}-server" # Naming our first task
-  container_definitions    = templatefile("${path.module}/docker.tpl", {
-    ports = jsonencode(local.ports)
-    envs = jsonencode(local.envs)
-    image = var.container.image
-    memory = var.container.memory
-    cpu = var.container.cpu
-    app = var.appname
-  })
+    }])
   requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
   memory                   = var.container.memory         # Specifying the memory our container requires

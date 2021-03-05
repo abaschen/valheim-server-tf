@@ -48,15 +48,15 @@ variable "container" {
             PASSWORD="Strong! Password @ Here", # password minimum 6 chars
             TZ="America/Chicago", # Timezone
             PUBLIC="1", #public
-            AUTO_UPDATE="1",
+            #AUTO_UPDATE="1",
             AUTO_UPDATE_SCHEDULE="0 4 * * *",
-            AUTO_BACKUP="1",
+            #AUTO_BACKUP="1",
             AUTO_BACKUP_SCHEDULE="*/15 * * * *",
-            AUTO_BACKUP_REMOVE_OLD="1",
-            AUTO_BACKUP_DAYS_TO_LIVE="3",
-            AUTO_BACKUP_ON_UPDATE="1",
-            AUTO_BACKUP_ON_SHUTDOWN="1",
-            WEBHOOK_URL="https://discord.com/api/webhooks/IM_A_SNOWFLAKE/AND_I_AM_A_SECRET",
+            #AUTO_BACKUP_REMOVE_OLD="1",
+            #AUTO_BACKUP_DAYS_TO_LIVE="3",
+            #AUTO_BACKUP_ON_UPDATE="1",
+            #AUTO_BACKUP_ON_SHUTDOWN="1",
+            #WEBHOOK_URL="https://discord.com/api/webhooks/IM_A_SNOWFLAKE/AND_I_AM_A_SECRET",
             UPDATE_ON_STARTUP="1"
         },
         volumes = {

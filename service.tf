@@ -23,6 +23,7 @@ resource "aws_main_route_table_association" "aws-route-table-association" {
 }
 
 resource "aws_ecs_service" "ecs-service" {
+   platform_version = "1.4.0"
   name            = "${var.appname}-service"
   cluster         = aws_ecs_cluster.cluster.id
   task_definition = aws_ecs_task_definition.app-task.arn
@@ -38,7 +39,7 @@ resource "aws_ecs_service" "ecs-service" {
     for_each= var.ports
     content{ 
         target_group_arn = aws_lb_target_group.target_group[load_balancer.key].arn # Referencing our target group
-        container_name   = aws_ecs_task_definition.app-task.family
+        container_name   = var.appname
         container_port   = load_balancer.value[0]
 
     }
