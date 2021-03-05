@@ -48,7 +48,7 @@ resource "aws_ecs_service" "ecs-service" {
     Application  = var.appname
   }
 
-  depends_on = [ aws_internet_gateway.gw ]
+  depends_on = [ aws_internet_gateway.gw, aws_ecs_task_definition.app-task ]
 }
 
 resource "aws_vpc" "default_vpc" {

@@ -12,7 +12,7 @@ resource "aws_alb" "application_load_balancer" {
 
 # Creating a security group for the load balancer:
 resource "aws_security_group" "load_balancer_security_group" {
-
+  vpc_id      = aws_vpc.default_vpc.id
   ingress = [
     for port in var.ports: {
         from_port   = port[0] # Allowing traffic in from port 2456
