@@ -44,7 +44,7 @@ resource "aws_lb_target_group" "target_group" {
     count = length(var.ports)
     name        = "${var.appname}-target-group-${var.ports[count.index][0]}-${var.ports[count.index][1]}"
     port        = var.ports[count.index][0]
-    protocol    = var.ports[count.index][1]
+    protocol    = upper(var.ports[count.index][1])
     target_type = "ip"
     vpc_id      = aws_vpc.default_vpc.id # Referencing the default VPC
     # TODO add healthcheck when they have one
