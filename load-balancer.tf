@@ -3,37 +3,6 @@ resource "aws_alb" "application_load_balancer" {
   name               = "${var.appname}-loadbalancer"
   load_balancer_type = "network"
   subnets = aws_subnet.default_subnet[*].id
-  # Referencing the security group
-  security_groups = [aws_security_group.load_balancer_security_group.id]
-  tags = {
-    Application  = var.appname
-  }
-}
-
-# Creating a security group for the load balancer:
-resource "aws_security_group" "load_balancer_security_group" {
-  vpc_id      = aws_vpc.default_vpc.id
-  ingress = [
-    for port in var.ports: {
-        from_port   = port[0] # Allowing traffic in from port 2456
-        to_port     = port[0]
-        protocol    = port[1]
-        cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from all sources
-        description = "port[0]/port[1]"
-
-        ipv6_cidr_blocks= null
-        prefix_list_ids= null
-        security_groups= null
-        self= null
-    }
-  ]
-
-  egress {
-    from_port   = 0 # Allowing any incoming port
-    to_port     = 0 # Allowing any outgoing port
-    protocol    = "-1" # Allowing any outgoing protocol 
-    cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
-  }
 
   tags = {
     Application  = var.appname
