@@ -1,6 +1,10 @@
 
 resource aws_cloudwatch_log_group "app-container"{
   name = "${var.appname}-logs"
+  retention_in_days = 1
+  tags = {
+    Application  = var.appname
+  }
 }
 resource "aws_ecs_task_definition" "app-task" {
   family                   = "${var.appname}-container"
