@@ -1,4 +1,7 @@
 
+resource aws_cloudwatch_log_group "app-container"{
+  name = "${var.appname}-logs"
+}
 resource "aws_ecs_task_definition" "app-task" {
   family                   = "${var.appname}-container"
   container_definitions    = jsonencode([{
@@ -6,10 +9,22 @@ resource "aws_ecs_task_definition" "app-task" {
       image= var.container.image
       essential= true
       portMappings= [for p in var.ports: {
-            "containerPort": p[0],
-            "hostPort": p[0],
-            "protocol": p[1]
-            }]
+          containerPort= p[0]
+          hostPort= p[0]
+          protocol= p[1]
+        }]
+      logConfiguration = {
+       logDriver= "awslogs"
+       options= {
+          awslogs-group= aws_cloudwatch_log_group.app-container.name
+          awslogs-region= var.region
+          awslogs-stream-prefix= var.appname
+        }
+      }
+      mountPoints = [for name, vol in var.container.volumes: {
+          containerPath= vol.host_path
+          sourceVolume= "${name}-efs"
+        }]
       memory= var.container.memory
       cpu= var.container.cpu
       environment= [for name, env in var.container.environment: {
@@ -27,11 +42,10 @@ resource "aws_ecs_task_definition" "app-task" {
       for_each = var.container.volumes
 
       content {
-        name = volume.key
+        name = "${volume.key}-efs"
 
         efs_volume_configuration {
           file_system_id          = aws_efs_file_system.app-fs.id
-          root_directory          = volume.value.host_path
         }
     }
   }

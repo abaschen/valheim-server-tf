@@ -38,8 +38,8 @@ variable "container" {
     description = "Map of container resource reservation. This impact the billing plan"
     default = {
         image = "mbround18/valheim:latest",
-        memory = 4096,
-        cpu = 2048,
+        memory = 2048,
+        cpu = 1024,
         # https://github.com/mbround18/valheim-docker
         environment = {
             PORT="2456",

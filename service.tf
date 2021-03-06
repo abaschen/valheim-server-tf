@@ -1,11 +1,3 @@
-resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.default_vpc.id
-
-  tags = {
-    Application = var.appname
-  }
-}
-
 # create routes
 resource "aws_route_table" "aws-route-table" {
   vpc_id = aws_vpc.default_vpc.id
@@ -49,23 +41,5 @@ resource "aws_ecs_service" "ecs-service" {
     Application  = var.appname
   }
 
-  depends_on = [ aws_internet_gateway.gw, aws_ecs_task_definition.app-task ]
-}
-
-resource "aws_vpc" "default_vpc" {
-  cidr_block = "10.0.0.0/16"
-  tags = {
-    Application  = var.appname
-  }
-}
-
-resource "aws_subnet" "default_subnet" {
-  count = length(var.subnet_zones)
-
-  vpc_id            = aws_vpc.default_vpc.id
-  availability_zone = var.subnet_zones[count.index]
-  cidr_block        = cidrsubnet(aws_vpc.default_vpc.cidr_block, 8, count.index + 1)
-  tags = {
-    Application  = var.appname
-  }
+  depends_on = [ aws_internet_gateway.gw, aws_ecs_task_definition.app-task, aws_lb_target_group.target_group ]
 }
