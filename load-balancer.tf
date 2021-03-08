@@ -1,8 +1,8 @@
 
-resource "aws_lb" "application_load_balancer" {
+resource "aws_lb" "network_load_balancer" {
   name               = "${var.appname}-loadbalancer"
   load_balancer_type = "network"
-  subnets = aws_subnet.default_subnet[*].id
+  subnets = [for o in aws_subnet.external_subnets : o.id]
 
   tags = {
     Application  = var.appname
@@ -15,7 +15,7 @@ resource "aws_lb_target_group" "target_group" {
     port        = var.ports[count.index][0]
     protocol    = upper(var.ports[count.index][1])
     target_type = "ip"
-    vpc_id      = aws_vpc.default_vpc.id # Referencing the default VPC
+    vpc_id      = aws_vpc.app_vpc.id # Referencing the default VPC
     # TODO add healthcheck when they have one
     #health_check {
     #    matcher = "200,301,302"
@@ -29,7 +29,7 @@ resource "aws_lb_target_group" "target_group" {
 
 resource "aws_lb_listener" "listener" {
   count = length(aws_lb_target_group.target_group)
-  load_balancer_arn = aws_lb.application_load_balancer.arn # Referencing our load balancer
+  load_balancer_arn = aws_lb.network_load_balancer.arn # Referencing our load balancer
     port        = aws_lb_target_group.target_group[count.index].port
     protocol    = aws_lb_target_group.target_group[count.index].protocol
   default_action {

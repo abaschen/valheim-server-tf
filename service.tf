@@ -1,19 +1,3 @@
-# create routes
-resource "aws_route_table" "aws-route-table" {
-  vpc_id = aws_vpc.default_vpc.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.gw.id
-  }
-  tags = {
-    Application = var.appname
-  }
-}
-resource "aws_main_route_table_association" "aws-route-table-association" {
-  vpc_id = aws_vpc.default_vpc.id
-  route_table_id = aws_route_table.aws-route-table.id
-}
-
 resource "aws_ecs_service" "ecs-service" {
    platform_version = "1.4.0"
   name            = "${var.appname}-service"
@@ -23,8 +7,7 @@ resource "aws_ecs_service" "ecs-service" {
   desired_count   = 1 # only one docker supported
 
    network_configuration {
-    subnets          = aws_subnet.default_subnet[*].id
-    assign_public_ip = true
+    subnets          = concat([for o in aws_subnet.internal_subnets : o.id], [for o in aws_subnet.external_subnets : o.id])
   }
 
   dynamic "load_balancer" {

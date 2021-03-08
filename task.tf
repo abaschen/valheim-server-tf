@@ -50,7 +50,10 @@ resource "aws_ecs_task_definition" "app-task" {
 
         efs_volume_configuration {
           file_system_id          = aws_efs_file_system.app-fs.id
-          root_directory = "/${volume.key}"
+          transit_encryption = "ENABLED"
+          authorization_config {
+            access_point_id = aws_efs_access_point.volumes-access-points[volume.key].id
+          }
         }
     }
   }
