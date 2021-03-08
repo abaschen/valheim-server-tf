@@ -41,5 +41,5 @@ resource "aws_ecs_service" "ecs-service" {
     Application  = var.appname
   }
 
-  depends_on = [ aws_internet_gateway.gw, aws_ecs_task_definition.app-task, aws_lb_target_group.target_group ]
+  depends_on = [ aws_internet_gateway.gw, aws_ecs_task_definition.app-task, aws_lb_target_group.target_group, aws_lb_listener.listener ]
 }

@@ -40,7 +40,7 @@ resource "aws_ecs_task_definition" "app-task" {
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
   memory                   = var.container.memory         # Specifying the memory our container requires
   cpu                      = var.container.cpu            # Specifying the CPU our container requires
-  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
+  execution_role_arn       = data.aws_iam_role.taskExecutionRole.arn
 
   dynamic "volume" {
       for_each = var.container.volumes
@@ -50,6 +50,7 @@ resource "aws_ecs_task_definition" "app-task" {
 
         efs_volume_configuration {
           file_system_id          = aws_efs_file_system.app-fs.id
+          root_directory = "/${volume.key}"
         }
     }
   }
@@ -59,6 +60,6 @@ resource "aws_ecs_task_definition" "app-task" {
   }
 }
 
-data "aws_iam_role" "ecsTaskExecutionRole" {
+data "aws_iam_role" "taskExecutionRole" {
   name               = "ecsTaskExecutionRole"
 }

@@ -38,6 +38,7 @@ variable "container" {
     description = "Map of container resource reservation. This impact the billing plan"
     default = {
         image = "mbround18/valheim:latest",
+        # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size
         memory = 2048,
         cpu = 1024,
         # https://github.com/mbround18/valheim-docker
@@ -46,7 +47,7 @@ variable "container" {
             NAME="Valheim Server Name", # display name for server list
             WORLD="Valheim World Name", # display name ingame
             PASSWORD="Strong! Password @ Here", # password minimum 6 chars
-            TZ="America/Chicago", # Timezone
+            TZ="Europe/Paris", # Timezone
             PUBLIC="1", #public
             #AUTO_UPDATE="1",
             AUTO_UPDATE_SCHEDULE="0 4 * * *",

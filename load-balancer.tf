@@ -1,47 +1,4 @@
 
-resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.default_vpc.id
-
-  tags = {
-    Application = var.appname
-  }
-}
-resource "aws_vpc" "default_vpc" {
-  cidr_block = "10.0.0.0/16"
-  tags = {
-    Application  = var.appname
-  }
-}
-
-resource "aws_subnet" "default_subnet" {
-  count = length(var.subnet_zones)
-
-  vpc_id            = aws_vpc.default_vpc.id
-  availability_zone = var.subnet_zones[count.index]
-  cidr_block        = cidrsubnet(aws_vpc.default_vpc.cidr_block, 8, count.index + 1)
-  tags = {
-    Application  = var.appname
-  }
-}
-
-data "aws_route53_zone" "domain" {
-  name = "${var.domain}."
-  private_zone = false
-
-}
-
-resource "aws_route53_record" "app" {
-  zone_id = data.aws_route53_zone.domain.zone_id
-  name    = "${var.appname}.${var.domain}"
-  type    = "A"
-
-  alias {
-    name                   = aws_lb.application_load_balancer.dns_name
-    zone_id                = aws_lb.application_load_balancer.zone_id
-    evaluate_target_health = false
-  }
-}
-
 resource "aws_lb" "application_load_balancer" {
   name               = "${var.appname}-loadbalancer"
   load_balancer_type = "network"
