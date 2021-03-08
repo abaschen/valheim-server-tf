@@ -28,14 +28,14 @@ resource "aws_security_group" "efs" {
     cidr_blocks = [aws_vpc.default_vpc.cidr_block]
   }
 
-/*  egress {
+  egress {
     from_port = 2049
     to_port   = 2049
     protocol  = "tcp"
 
     cidr_blocks = [aws_vpc.default_vpc.cidr_block]
   }
-*/
+
   tags = {
     Application = var.appname
   }
